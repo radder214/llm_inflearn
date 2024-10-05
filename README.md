@@ -1,4 +1,4 @@
 # RAG LLM 만들기
 
-### [241004]
+### 24.10.04
 - Vector Database(Vector Store)
