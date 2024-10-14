@@ -12,6 +12,7 @@ st.title("🤖소득세 챗봇") # <h1>으로 매핑
 st.caption("소득세에 관련된 모든것을 답변해드립니다!")
 
 #NOTE - 사용자가 입력한 질문들을 저장할 곳 생성(session_state) --> message_list라는 session_state에 사용자가 입력한 질문을 저장
+# 브라우저의 localstorage 역할과 비슷한 듯
 if "message_list" not in st.session_state:
     st.session_state.message_list = []
 
