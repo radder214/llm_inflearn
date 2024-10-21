@@ -11,7 +11,7 @@ st.set_page_config(
 st.title("🤖소득세 챗봇") # <h1>으로 매핑
 st.caption("소득세에 관련된 모든것을 답변해드립니다!")
 
-#NOTE - 사용자가 입력한 질문들을 저장할 곳 생성(session_state) --> message_list라는 session_state에 사용자가 입력한 질문을 저장
+#NOTE - 사용자가 입력한 질문들을 저장할 곳 생성(session_state) --> message_list라는 이름의 session_state에 사용자가 입력한 질문을 저장
 # 브라우저의 localstorage 역할과 비슷한 듯
 if "message_list" not in st.session_state:
     st.session_state.message_list = []
@@ -24,7 +24,12 @@ for message in st.session_state.message_list:
 #NOTE - 사용자가 질문을 입력하는 부분
 # := --> 값의 할당과 반환을 동시에 수행, 표현식 내부에서 변수에 값을 할당하면서 그 값을 바로 사용할 수 있게 해준다.
 if user_question := st.chat_input(placeholder="소득세에 관련된 궁금한 내용을 말해!"):
+    # 사용자 부분
     with st.chat_message("user"):
         st.write(user_question)
-    # 사용자가 새롭게 입력한 질문을 message_list에 저장
     st.session_state.message_list.append({"role" : "user", "content" : user_question})
+
+    # AI 부분
+    with st.chat_message("ai"):
+        st.write("여기는 AI 메시지")
+    st.session_state.message_list.append({"role" : "ai", "content" : "여기는 AI 메시지"})
