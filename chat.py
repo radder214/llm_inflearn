@@ -38,5 +38,5 @@ if user_question := st.chat_input(placeholder="소득세에 관련된 궁금한 
         # AI 부분
         ai_message = get_ai_message(user_question)
         with st.chat_message("ai"):
-            st.write(ai_message)
-        st.session_state.message_list.append({"role" : "ai", "content" : ai_message})
+            ai_message = st.write_stream(ai_message)
+            st.session_state.message_list.append({"role" : "ai", "content" : ai_message})
