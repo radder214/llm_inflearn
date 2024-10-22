@@ -1,15 +1,6 @@
 # streamlit의 alias를 'st'로 지정(공식문서에서도 st로 지정하는 것을 권장)
 import streamlit as st
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.chains import RetrievalQA
-from langchain import hub
-from langchain_openai import ChatOpenAI
-from dotenv import load_dotenv
-from langchain_openai import OpenAIEmbeddings
-from langchain_pinecone import PineconeVectorStore
-
-load_dotenv()
+from llm import get_ai_message
 
 #NOTE - 페이지 타이틀과 아이콘 설정(브라우저 탭 부분)
 st.set_page_config(
@@ -33,40 +24,7 @@ for message in st.session_state.message_list:
 
 
 #NOTE - AI 답변 생성
-def get_ai_message(user_message):
-    embedding = OpenAIEmbeddings(model="text-embedding-3-large")
-    index_name = "tax-markdown-index" #Pinecone Console 사이트에서 만든 index 이름
-    database = PineconeVectorStore.from_existing_index(
-        index_name = index_name,
-        embedding=embedding
-    )
 
-    llm = ChatOpenAI(model="gpt-4o")
-    prompt = hub.pull("rlm/rag-prompt")
-    retriever = database.as_retriever(search_kwargs={"k" : 4})
-
-    qa_chain = RetrievalQA.from_chain_type(
-        llm,
-        retriever=database.as_retriever(),
-        chain_type_kwargs={"prompt" : prompt}
-    )
-
-    dictionary = ["사람을 나타내는 표현 -> 거주자"]
-
-    prompt = ChatPromptTemplate.from_template(f"""
-        사용자의 질문을 보고, 우리의 사전을 참고해서 사용자의 질문을 변경해주세요.
-        만약 변경할 필요가 없다고 판단된다면, 사용자의 질문을 변경하지 않아도 됩니다.
-        그런 경우에는 질문만 리턴해주세요
-
-        사전: {dictionary}
-        
-        질문 : {{question}}
-    """)
-
-    dictionary_chain = prompt | llm | StrOutputParser()
-    tax_chain = {"query" : dictionary_chain} | qa_chain
-    ai_message = tax_chain.invoke({"question" : user_message})
-    return ai_message.get("result")
 
 #NOTE - 사용자가 질문을 입력하는 부분
 # := --> 값의 할당과 반환을 동시에 수행, 표현식 내부에서 변수에 값을 할당하면서 그 값을 바로 사용할 수 있게 해준다.
