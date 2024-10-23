@@ -51,8 +51,9 @@ def get_retriever():
         index_name = index_name,
         embedding  = embedding
     )
-    # vertor DB를 검색용 retriever로 변환
+    # vertor DB 객체를 검색용 retriever로 변환
     retriever = database.as_retriever(search_kwargs={"k" : 4}) # 상위 4개의 관련 문서를 검색하는 retriever 생성
+
     # 설정이 완료된 retriever 객체 반환
     # 해당 retriever 객체는 이후 질문-답변 시스템에서 관련 문서를 검색하는데 사용된다.
     return retriever
@@ -108,10 +109,10 @@ def get_rag_chain():
 
     # 답변 생성을 위한 시스템 프롬프트 생성
     system_prompt = (
-        "You are an assistant for question-answering tasks. "
-        "Use the following pieces of retrieved context to answer "
-        "the question. If you don't know the answer, say that you "
-        "don't know. Use three sentences maximum and keep the "
+        "You are an assistant for question-answering tasks. "           # 당신은 질문-답변 작업을 돕는 어시스턴트입니다.
+        "Use the following pieces of retrieved context to answer "      # 질문에 답하기 위해 다음에 제공된 맥락을 사용하십시오.
+        "the question. If you don't know the answer, say that you "     # 답을 모르면 모른다고 말하십시오.
+        "don't know. Use three sentences maximum and keep the "         # 세 문장 이내로 답변을 간결하게 유지하십시오.
         "answer concise."
         "\n\n"
         "{context}"
@@ -145,7 +146,8 @@ def get_rag_chain():
 # 최종적으로 LLM에게 질문을 던지는 부분
 def get_ai_message(user_message):
     # ('사전' 변환 체인)과 (RAG 체인) 조합
-    tax_chain = {"input" : get_dictionary_chain()} | get_rag_chain() # {"input" : get_dictionary_chain()} --> get_rag_chain() 에 넣어준다.
+    # {"input" : get_dictionary_chain()} 먼저 실행 후 --> 그 결과를 get_rag_chain()에 넣어서 실행하는 chain
+    tax_chain = {"input" : get_dictionary_chain()} | get_rag_chain()
     # 사용자 메시지 처리 및 응답 스트리밍
     ai_response = tax_chain.stream(
         {
