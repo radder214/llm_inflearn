@@ -115,7 +115,7 @@ def get_rag_chain():
         "don't know. Use three sentences maximum and keep the "         # 세 문장 이내로 답변을 간결하게 유지하십시오.
         "answer concise."
         "\n\n"
-        "{context}"
+        "{context}" # context라는 이름의 입력 변수를 가지고 있어야 작동한다.(공식문서 참고)
     )
 
     # QA 프롬프트 템플릿 생성
