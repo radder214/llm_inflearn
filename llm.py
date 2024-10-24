@@ -60,9 +60,13 @@ def get_retriever():
 
 
 # llm을 return 한다.
+from callback import LLMDebugCallback 
 def get_llm(model="gpt-4o"): # default parameter
     # OpenAI의 chatBot 모델 초기화 (기본값은 gpt-4o)
-    return ChatOpenAI(model=model)
+    return ChatOpenAI(
+        model=model,
+        callbacks=[LLMDebugCallback()]
+    )
 
 
 # dictionary_chain을 return 한다.
@@ -128,7 +132,9 @@ def get_rag_chain():
     )
 
     # 문서 처리와 답변 생성을 위한 체인 생성
+    # 1. 문서 체인 생성
     question_answer_chain = create_stuff_documents_chain(get_llm(), qa_prompt)
+    # 2. 검색 체인 생성
     rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
 
     # 채팅 기록을 관리하는 최종 RAG 체인 생성
@@ -136,7 +142,7 @@ def get_rag_chain():
         rag_chain,
         get_session_history,
         input_messages_key="input",
-        history_messages_key="chat_history",
+        history_messages_key="chat_history", # MessagesPlaceholder("chat_history") --> placeholder의 이름과 history_messages_key의 값이 서로 일치해야 한다.
         output_messages_key="answer",
     ).pick("answer") # pick을 사용해야 streaming 할 때 좋다.
 
