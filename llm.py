@@ -110,6 +110,7 @@ def get_rag_chain():
     history_aware_retriever = create_history_aware_retriever(
         get_llm(), get_retriever(), contextualize_q_prompt
     )
+    # 만약 채팅 기록이 아예 없다면 위의 코드들은 실행되지 않는다. --> 터미널 로그 확인해 볼 것!
 
     # 답변 생성을 위한 시스템 프롬프트 생성
     system_prompt = (
@@ -138,13 +139,15 @@ def get_rag_chain():
     rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
 
     # 채팅 기록을 관리하는 최종 RAG 체인 생성
+    # ! 아래 코드는 답변 생성과 직접적인 관련이 없다.
+    # ! 실제로 답변을 생성하는 곳은 rag_chain 이다.
     conversational_rag_chain = RunnableWithMessageHistory(
         rag_chain,
         get_session_history,
         input_messages_key="input",
         history_messages_key="chat_history", # MessagesPlaceholder("chat_history") --> placeholder의 이름과 history_messages_key의 값이 서로 일치해야 한다.
         output_messages_key="answer",
-    ).pick("answer") # pick을 사용해야 streaming 할 때 좋다.
+    ).pick("answer") # streaming에 필요한 답변만 선택(pick을 사용해야 streaming 할 때 좋다.)
 
     return conversational_rag_chain
 
