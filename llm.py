@@ -100,8 +100,8 @@ def get_rag_chain():
     # 질문 컨텍스트화를 위한 프롬프트 template 생성
     contextualize_q_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", contextualize_q_system_prompt),
-            MessagesPlaceholder("chat_history"),
+            ("system", contextualize_q_system_prompt), # llm의 역할 설정
+            MessagesPlaceholder("chat_history"), # 맨 처음 채팅을 할 때는 아직 존재하지 않는다.
             ("human", "{input}"),
         ]
     )
@@ -126,8 +126,8 @@ def get_rag_chain():
     # QA 프롬프트 템플릿 생성
     qa_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", system_prompt),
-            MessagesPlaceholder("chat_history"),
+            ("system", system_prompt), # llm의 역할 설정
+            MessagesPlaceholder("chat_history"), # 맨 처음 채팅을 할 때는 아직 존재하지 않는다.
             ("human", "{input}"),
         ]
     )

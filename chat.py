@@ -1,6 +1,9 @@
 # streamlit의 alias를 'st'로 지정(공식문서에서도 st로 지정하는 것을 권장)
 import streamlit as st
-from llm import get_ai_message
+# few show 적용 안 된 version
+from llm  import get_ai_message
+# few show 적용 된 version
+from llm_few_shot import get_ai_message as get_ai_message_fewshot
 
 #NOTE - 페이지 타이틀과 아이콘 설정(브라우저 탭 부분)
 st.set_page_config(
@@ -36,7 +39,8 @@ if user_question := st.chat_input(placeholder="소득세에 관련된 궁금한 
 
     with st.spinner("답변을 생성하는 중..."): # 뱅글뱅글 돌아가는 것을 보여준다.
         # AI 부분
-        ai_message = get_ai_message(user_question)
+        # ai_message = get_ai_message(user_question)
+        ai_message = get_ai_message_fewshot(user_question)
         with st.chat_message("ai"):
             ai_message = st.write_stream(ai_message)
             st.session_state.message_list.append({"role" : "ai", "content" : ai_message})
